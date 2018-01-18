@@ -73,10 +73,11 @@ class RokuException(Exception):
 
 class Application(object):
 
-    def __init__(self, id, version, name, roku=None):
+    def __init__(self, id, version, name, type, roku=None):
         self.id = str(id)
         self.version = version
         self.name = name
+        self.type = type
         self.roku = roku
 
     def __eq__(self, other):
@@ -84,8 +85,8 @@ class Application(object):
             (self.id, self.version) == (other.id, other.version)
 
     def __repr__(self):
-        return ('<Application: [%s] %s v%s>' %
-                (self.id, self.name, self.version))
+        return ('<Application: [%s] %s v%s %s>' %
+                (self.id, self.name, self.version, self.type))
 
     @property
     def icon(self):
@@ -103,16 +104,18 @@ class Application(object):
 
 class DeviceInfo(object):
 
-    def __init__(self, model_name, model_num, software_version, serial_num):
+    def __init__(self, model_name, model_num, software_version, serial_num, user_device_name):
         self.model_name = model_name
         self.model_num = model_num
         self.software_version = software_version
         self.serial_num = serial_num
+        self.user_device_name = user_device_name
 
     def __repr__(self):
-        return ('<DeviceInfo: %s-%s, SW v%s, Ser# %s>' %
+        return ('<DeviceInfo: %s-%s, SW v%s, Ser# %s, Name %s>' %
                 (self.model_name, self.model_num,
-                 self.software_version, self.serial_num))
+                 self.software_version, self.serial_num,
+                 self.user_device_name))
 
 
 class Roku(object):
@@ -220,7 +223,8 @@ class Roku(object):
                 '.',
                 root.find('software-build').text
             ]),
-            serial_num=root.find('serial-number').text
+            serial_num=root.find('serial-number').text,
+            user_device_name=root.find('user-device-name').text
         )
         return dinfo
 
@@ -271,5 +275,6 @@ class Roku(object):
             id=app_node.get('id'),
             version=app_node.get('version'),
             name=app_node.text,
+            type=app_node.get('type')
             roku=self,
         )

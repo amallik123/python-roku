@@ -275,6 +275,6 @@ class Roku(object):
             id=app_node.get('id'),
             version=app_node.get('version'),
             name=app_node.text,
-            type=app_node.get('type')
+            type=app_node.get('type'),
             roku=self,
         )
